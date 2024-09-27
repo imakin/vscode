@@ -46,8 +46,16 @@ export class OpenFileAction extends Action2 {
 
 	override async run(accessor: ServicesAccessor, data?: ITelemetryData): Promise<void> {
 		const fileDialogService = accessor.get(IFileDialogService);
+		const workspaceContextService = accessor.get(IWorkspaceContextService);
 
-		return fileDialogService.pickFileAndOpen({ forceNewWindow: false, telemetryExtraData: data });
+		const workspaceFolders = workspaceContextService.getWorkspace().folders;
+		const defaultUri = workspaceFolders.length > 0 ? workspaceFolders[0].uri : undefined;
+
+		return fileDialogService.pickFileAndOpen({
+			forceNewWindow: false,
+			telemetryExtraData: data,
+			defaultUri: defaultUri
+		});
 	}
 }
 
